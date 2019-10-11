@@ -1,0 +1,20 @@
+{% if messages %}
+    {% for message in messages %}
+        <div class="col-md-10 col-md-offset-1 col-sm-12" >
+            <!-- {{ message.tags }} -->
+            <div class="alert alert-{% if 'error' in message.tags %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade in" role="alert" style="text-align: center">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{ message }}</strong>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+{% for field in form %}
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+       <span class="text-danger small">{{ field.errors }}</span>  
+    </div>
+    <label class="control-label col-sm-2">{{ field.label_tag }}</label>
+      <div class="col-sm-10">{{ field }}</div>
+  </div>
+{% endfor %}

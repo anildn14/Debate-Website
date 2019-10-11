@@ -1,0 +1,101 @@
+{% extends 'debate/base.html' %}
+{% load staticfiles %}
+{% block title %} Post Details {% endblock %}
+{% block artist_details %}active{% endblock %}
+{% block body %}
+
+<div class="container-fluid">
+{% if messages %}
+    {% for message in messages %}
+        <div class="col-md-10 col-md-offset-1 col-sm-12" >
+        	<!-- {{ message.tags }} -->
+            <div class="alert alert-{% if 'error' in message.tags %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade in" role="alert" style="text-align: center">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{ message }}</strong>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+</div>
+{% if posts %}
+		<div class="container-fluid">
+			<div class="jumbotron">
+			<h1 style="display: inline"><strong><i>{{posts.post_topic }}</i></strong></h1>
+			<h5 style="display: inline;">
+				{% if request.user == posts.post_owner %}
+				<a href="{% url 'debate:post-update' posts.id %}">Update</a>
+				<a href="{% url 'debate:post-delete' posts.id %}">Delete</a>
+				{% endif %}
+			</h5>
+			<h6>Category : {{ posts.post_category.name }} | Owner : {{posts.post_owner}}</h6>
+			<h6>Posted on : {{posts.post_date}} | {{ total_likes}} Like{{ total_likes |pluralize}} </h6>
+            {% if user.is_authenticated %}
+            <form action="{% url 'debate:like_post' %} " method="post">
+                {% csrf_token %}
+                {% if is_liked %}
+                <button type="submit" name="posts_id" value="{{ posts.id }}" class="btn btn-danger">Dislike</button>
+                {% else %}
+                <button type="submit" name="posts_id" value="{{ posts.id }}" class="btn btn-primary">Like</button>
+                {% endif %}
+            </form>
+            {% endif %}
+			<hr>
+			<h4>{{posts.post_content}}</h4>
+			</div>
+		</div>
+        {% comment %}
+	<!-- {% for p in posts %} -->
+	<!-- {% endfor %} -->
+        {% endcomment %}
+{% endif %}
+
+<hr style="border: 5px solid black;border-radius: 5px;">
+
+<div class="col-md-10 col-md-offset-1 col-sm-12" style="background: white;padding-top: 10px">
+    <div>
+        {% if not user.is_active %}
+            <a href="{% url 'debate:login_user' %}" style="padding-top: 10px;">Login to add comments.</a>
+        {% endif %}
+        <form action="{% url 'debate:detail' posts.id %}" method="post" enctype="multipart/form-data"  style="padding-top: 10px;">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Post comment" class="btn btn-default">
+        </form>
+        <p class="lead">{{ all_comments.count }} Comments</p>
+        {% for com in all_comments %}
+        <blockquote>
+            <p style="display: inline">{{ com.comment_text}}</p>
+            <!-- {{ request.user }} - {{ com.comment_name }} -->
+            {% if request.user == com.comment_name %}
+                <a href="{% url 'debate:delete-comment' posts.id com.id %}" style="display: inline;">Delete</a>
+            {% endif %}
+            <br>
+            <h6 class="text-muted" style="display: inline">{{ com.comment_name }}, posted {{ com.comment_time|timesince }} ago{% if com.children.count > 0 %} | {{ com.children.count }} Comment{% if com.children.count > 1%}s{% endif %}{% endif %}</h6>
+            <br>
+            <div class='comment-reply'>
+                {% for reply in com.children %}
+                    <blockquote>
+                        <p style="display: inline">{{ reply.comment_text}}</p>
+        	            {% if request.user == com.comment_name %}
+                            <a href="{% url 'debate:delete-comment' posts.id reply.id %}" style="display: inline;">Delete</a>
+                        {% endif %}
+                        <h6 class="text-muted">{{ reply.comment_name }}, posted {{ reply.comment_time|timesince }} ago.</h6>
+                    </blockquote>
+                {% endfor %}
+                <form action="{% url 'debate:detail' posts.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form }}
+                    {% comment %}
+                    <!-- {{ form|crispy }} -->
+                    {% endcomment %}
+                    <!-- <input type="hidden" name="next" value="{{ request.GET.next }}"> -->
+                    <input type="hidden" name="parent_id" value="{{ com.id }}">
+                    <input type="submit" value="Reply" class="btn btn-default">
+                </form>
+            </div>
+        </blockquote>
+        <hr/>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

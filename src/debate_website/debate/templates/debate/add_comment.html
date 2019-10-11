@@ -1,0 +1,54 @@
+{% extends 'debate/base.html' %}
+{% block title %} Add Comment {% endblock %}
+{% block comments %}active{% endblock %}
+{% block body %}
+<div class="col-md-10 col-md-offset-1 col-sm-12" style="background: white;padding-top: 10px">
+    <div>
+        {% if not user.is_active %}
+            <a href="{% url 'debate:add-comment'%}" style="padding-top: 10px;">Login to add comments.</a>
+        {% endif %}
+        <form action="." method="post" enctype="multipart/form-data"  style="padding-top: 10px;">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Post comment" class="btn btn-default">
+        </form>
+        <hr/>
+        <p class="lead">{{ all_comments.count }} Comments</p>
+        {% for com in all_comments %}
+        <blockquote>
+            <p style="display: inline">{{ com.comment_text}}</p>
+            {% if user.is_superuser %}
+                <a href="{% url 'debate:delete-comment' com.id %}" style="display: inline;">Delete</a>
+            {% endif %}
+            <br>
+            <h6 class="text-muted" style="display: inline">{{ com.comment_name }}, posted {{ com.comment_time|timesince }} ago{% if com.children.count > 0 %} | {{ com.children.count }} Comment{% if com.children.count > 1%}s{% endif %}{% endif %}</h6>
+            <!-- <a class="comment-reply-btn" href="#">Reply</a></h6> -->
+            <br>
+            <div class='comment-reply'>
+                {% for reply in com.children %}
+
+                    <blockquote>
+                        <p style="display: inline">{{ reply.comment_text}}</p>
+                        {% if user.is_superuser %}
+                            <a href="{% url 'debate:delete-comment' reply.id %}" style="display: inline;">Delete</a>
+                        {% endif %}
+                        <h6 class="text-muted">{{ reply.comment_name }}, posted {{ reply.comment_time|timesince }} ago.</h6>
+                    </blockquote>
+                {% endfor %}
+
+                <form action="." method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form}}
+                    <!-- <input type="hidden" name="next" value="{{ request.GET.next }}"> -->
+                    <input type="hidden" name="parent_id" value="{{ com.id }}">
+                    <input type="submit" value="Reply" class="btn btn-default">
+                </form>
+            </div>
+        </blockquote>
+        <hr/>
+
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

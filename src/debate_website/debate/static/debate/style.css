@@ -1,0 +1,51 @@
+body{
+	background-image: url("background/background4.jpg");
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+	/*max-width: auto;*/
+  	/*height: auto;*/
+	/*object-fit: scale-down;*/
+	/*padding-bottom: 70px;*/
+	/*object-fit: fill;*/
+	/*no-repeat center center fixed;*/
+	/*width: 100%;*/
+  	/*height: auto;*/
+  	/*background-size: cover;*/
+	/*background-size: auto;*/
+	/*background-repeat: no-repeat;*/
+}
+
+footer{
+  position: fixed;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+  color: white;
+  text-align: center;
+}
+
+.comment-wrapper .panel-body {
+    max-height:650px;
+    overflow:auto;
+}
+
+.comment-wrapper .media-list .media img {
+    width:64px;
+    height:64px;
+    border:2px solid #e5e7e8;
+}
+
+.comment-wrapper .media-list .media {
+    border-bottom:1px dashed #efefef;
+    margin-bottom:25px;
+}
+
+textarea.form-control {
+    height: 75px !important; /*overrides all other tags*/
+}
+

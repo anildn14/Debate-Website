@@ -1,0 +1,33 @@
+{% extends 'debate/base.html' %}
+{% block title %} Update Post {% endblock %}
+{% block body %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12 col-md-7">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <!-- <h3 style="display: inline">Update Post <h6 style="display: inline">(post owner : {{ post.post_owner }} )</h6></h3>
+          <br>
+          <br>
+          <h3 style="display: inline">Topic : {{ post.post_topic }}</h3>
+          <br>
+          <br> -->
+          <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% include 'debate/form-template.html' %}
+            
+            <!-- Button -->
+            <div class="form-group">
+              <div class="col-sm-offset-4 col-sm-8">
+                <button type="submit" class="btn btn-success">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'debate/base.html' %}
+{% block title %}Sign In{% endblock %}
+{% block log %}active{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<style type="text/css">
+	.login-form {
+		width: 340px;
+    	margin: 30px auto;
+	}
+    .login-form form {
+    	margin-bottom: 15px;
+        background: #f7f7f7;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+    }
+    .login-form h2 {
+        margin: 0 0 15px;
+    }
+    .login-form .hint-text {
+		color: #777;
+		padding-bottom: 15px;
+		text-align: center;
+    }
+    .form-control, .btn {
+        min-height: 38px;
+        border-radius: 2px;
+    }
+    .login-btn {        
+        font-size: 15px;
+        font-weight: bold;
+    }
+    .or-seperator {
+        margin: 20px 0 10px;
+        text-align: center;
+        border-top: 1px solid #ccc;
+    }
+    .or-seperator i {
+        padding: 0 10px;
+        background: #f7f7f7;
+        position: relative;
+        top: -11px;
+        z-index: 1;
+    }
+    .social-btn .btn {
+        margin: 10px 0;
+        font-size: 15px;
+        text-align: left; 
+        line-height: 24px;       
+    }
+	.social-btn .btn i {
+		float: left;
+		margin: 4px 15px  0 5px;
+        min-width: 15px;
+	}
+	.input-group-addon .fa{
+		font-size: 18px;
+	}
+</style>
+</head>
+<body>
+<div class="login-form">
+	{% if error_message %}
+        <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
+    <form role="form" method="post" enctype="multipart/form-data">
+    	{% csrf_token %}
+        <h2 class="text-center">Sign in</h2>		
+        <div class="text-center social-btn">
+            <a href="{% url 'social:begin' 'facebook' %}?next={{ request.GET.next }}" class="btn btn-primary btn-block"><i class="fa fa-facebook"></i> Sign in with Facebook</a>
+			<a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.GET.next }}" class="btn btn-danger btn-block"><i class="fa fa-google"></i> Sign in with Google</a>
+        </div>
+		<div class="or-seperator"><i>or</i></div>
+        <div class="form-group">
+        	<div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input id="id_username" type="text" class="form-control" maxlength="30" name="username" placeholder="Username" required="required">
+            </div>
+        </div>
+		<div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                <input type="password" class="form-control" name="password" id="id_password" maxlength="30" placeholder="Password" required="required">
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="form-group" style="text-align:center;color:red;padding-bottom: 0px">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            <!-- <h1>{{ request.GET.next }}</h1> -->
+        {% endif %}   
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-block login-btn">Sign in</button>
+        </div>
+    </form>
+    <div class="hint-text small">Don't have an account? <a href="{% url 'rap:register' %}" class="text-success">Register Now!</a></div>
+</div>
+{% endblock %}
